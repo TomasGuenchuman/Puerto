@@ -39,7 +39,6 @@ return new Promise((resolve, reject) => {
 
 }
 
-
 const buquesNuestros =
 [
   'HANSEATIC INSPIRATION',
@@ -70,33 +69,69 @@ const buquesNuestros =
     
 ]
 
+const meses = [
+  "ENERO",
+  "FEBRERO",
+  "MARZO",
+  "ABRIL",
+  "MAYO",
+  "JUNIO",
+  "JULIO",
+  "AGOSTO",
+  "SEPTIEMBRE",
+  "OCTUBRE",
+  "NOVIEMBRE",
+  "DICIEMBRE"
+];
+
+function comparacionMes (recalada,recaladaSiguiente) {
+  // VERIFICAR SI LA RECALADA SIGUIENTE ES OTRO MES
+  let mes;
+  mes = recalada.Llegada.slice(3,5)
+  let mesSiguiente;
+  mesSiguiente = recaladaSiguiente.Llegada.slice(3,5)
+  return (Number(mes) != Number(mesSiguiente))
+}
 
 get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
 .then((data) => {
   const tablaHtml = document.getElementById("buques")
   let htmlString = '';
-  //console.log("el json de respuesta es:", data);
   let listaBarcos = parseHTMLTableElem(data)
-
   let stringDatos = buquesNuestros.toString() 
-  
+  let recaladas = 0;
   for (let i = 0; i < listaBarcos.length;i++) {
-    let inicioString = (stringDatos.search(listaBarcos[i].Buque))
+    // INDEX [0] DEL BUQUE
+    let inicioString = (stringDatos.search(listaBarcos[i].Buque)) 
+
     if ((inicioString != -1)  && (listaBarcos[i].Buque = ( stringDatos.slice(inicioString,inicioString+(listaBarcos[i].Buque).length) ) ) )  {
-    htmlString = htmlString + 
+      recaladas = recaladas + 1
+
+      htmlString = htmlString + 
     ' <tr>'+
     '<td>'+listaBarcos[i].Buque+'</td>'+
     '<td>'+listaBarcos[i].Llegada+'</td>'+
     '<td>'+listaBarcos[i].Partida+'</td>'+
     '<td>'+listaBarcos[i].Agente+'</td>'+
     '</tr>';
-    }
     
+    }
+    if (((i+1) < listaBarcos.length) && (comparacionMes(listaBarcos[i],listaBarcos[i+1])) ) {
+      mes = listaBarcos[i].Llegada.slice(3,5)
+      htmlString = htmlString + 
+      ' <tr>'+
+      '<td colspan="2" style="font-weight: bolder;">MES: '+meses[mes-1]+'</td>'+
+      '<td colspan="2" style="font-weight: bolder;">RECALADAS: '+recaladas+'</td>'+
+      '</tr>';
+      ;
+
+      recaladas = 0
+    }
   }
   console.log(listaBarcos)
   tablaHtml.innerHTML = htmlString
 })
 .catch((err) => {
   console.log("Error encontrado:", err);
-  alert('ERROR')
+  alert('ERROR',err)
 });
