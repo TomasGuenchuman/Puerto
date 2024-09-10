@@ -1,4 +1,6 @@
-// HTML TABLE A JSON
+/*
+  CONVIERTE EL STRING DEL HTML ( table ) a un elemento HTML
+*/
 function parseHTMLTableElem(table) { //parametro: string
 
   // html string
@@ -21,7 +23,10 @@ function parseHTMLTableElem(table) { //parametro: string
   })
 }
 
-//OBTENER STRING HTML
+/*
+  LLAMADO A LA API
+  OBTENGO EL STRING DE LA TABLA HTML
+*/
 function get(url) {
 return new Promise((resolve, reject) => {
 
@@ -84,11 +89,9 @@ const meses = [
 ];
 
 function comparacionMes (recalada,recaladaSiguiente) {
-  // VERIFICAR SI LA RECALADA SIGUIENTE ES OTRO MES
-  let mes;
-  mes = recalada.Llegada.slice(3,5)
-  let mesSiguiente;
-  mesSiguiente = recaladaSiguiente.Llegada.slice(3,5)
+  // VERIFICA SI LA RECALADA SIGUIENTE ES OTRO MES
+  let mes = recalada.Llegada.slice(3,5)
+  let mesSiguiente = recaladaSiguiente.Llegada.slice(3,5)
   return (Number(mes) != Number(mesSiguiente))
 }
 
@@ -103,7 +106,11 @@ get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
     // INDEX [0] DEL BUQUE
     let inicioString = (stringDatos.search(listaBarcos[i].Buque)) 
 
-    if ((inicioString != -1)  && (listaBarcos[i].Buque = ( stringDatos.slice(inicioString,inicioString+(listaBarcos[i].Buque).length) ) ) )  {
+    if ( 
+    ( (inicioString != -1)  && 
+    (listaBarcos[i].Buque = ( stringDatos.slice(inicioString,inicioString+(listaBarcos[i].Buque).length) ) )
+     ) ||  (listaBarcos[i].Agente = "AGENCIA MARITIMA INTERNACIONAL  SA") 
+    ) {
       recaladas = recaladas + 1
 
       htmlString = htmlString + 
