@@ -1,3 +1,49 @@
+const listado =
+[
+  'HANSEATIC INSPIRATION',
+  'HANSEATIC SPIRIT',
+  'HONDIUS',
+  'MS EUROPA 2',
+  'ORTELIUS',
+  'PACIFIC WORLD',
+  'PLANCIUS',
+  'POLAR PIONEER',
+  'SEAVENTURE',
+  'SH DIANA',
+  'HESPERIDES',
+  'PERSEVERANCE',
+  'SH VEGA',
+  'SEVEN SEAS VOYAGER',
+  'WORLD NAVIGATOR',
+  'WORLD TRAVELLER',
+  'WORLD VOYAGER',
+  'EXPLORIS ONE',
+  'HAMBURG',
+  'MAGELLAN EXPLORER',
+  'OCEAN ADVENTURER',
+  'OCEAN NOVA',
+  'SEA SPIRIT',
+  'THE WORLD'
+    
+]
+
+const buquesNuestros = new Map(listado.map(buque => [buque, true])); // HASH TABLE
+
+const meses = [
+  "ENERO",
+  "FEBRERO",
+  "MARZO",
+  "ABRIL",
+  "MAYO",
+  "JUNIO",
+  "JULIO",
+  "AGOSTO",
+  "SEPTIEMBRE",
+  "OCTUBRE",
+  "NOVIEMBRE",
+  "DICIEMBRE"
+];
+
 /*
   CONVIERTE EL STRING DEL HTML ( table ) a un elemento HTML
 */
@@ -44,72 +90,26 @@ return new Promise((resolve, reject) => {
 
 }
 
-const buquesNuestros =
-[
-  'HANSEATIC INSPIRATION',
-  'HANSEATIC SPIRIT',
-  'HONDIUS',
-  'MS EUROPA 2',
-  'ORTELIUS',
-  'PACIFIC WORLD',
-  'PLANCIUS',
-  'POLAR PIONEER',
-  'SEAVENTURE',
-  'SH DIANA',
-  'HESPERIDES',
-  'PERSEVERANCE',
-  'SH VEGA',
-  'SEVEN SEAS VOYAGER',
-  'WORLD NAVIGATOR',
-  'WORLD TRAVELLER',
-  'WORLD VOYAGER',
-  'EXPLORIS ONE',
-  'HAMBURG',
-  'MAGELLAN EXPLORER',
-  'OCEAN ADVENTURER',
-  'OCEAN NOVA',
-  'SEA SPIRIT',
-  'THE WORLD'
-    
-]
-
-const meses = [
-  "ENERO",
-  "FEBRERO",
-  "MARZO",
-  "ABRIL",
-  "MAYO",
-  "JUNIO",
-  "JULIO",
-  "AGOSTO",
-  "SEPTIEMBRE",
-  "OCTUBRE",
-  "NOVIEMBRE",
-  "DICIEMBRE"
-];
 
 function comparacionMes (recalada,recaladaSiguiente) {
   // VERIFICA SI LA RECALADA SIGUIENTE ES OTRO MES
-  let mes = recalada.Llegada.slice(3,5)
-  let mesSiguiente = recaladaSiguiente.Llegada.slice(3,5)
+  let mes = recalada[3] + recalada[4] 
+  let mesSiguiente = recaladaSiguiente[3] + recaladaSiguiente[4]
   return (Number(mes) != Number(mesSiguiente))
 }
+
 
 get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
 .then((data) => {
   const tablaHtml = document.getElementById("buques")
   let htmlString = '';
-  let listaBarcos = parseHTMLTableElem(data)
-  let stringDatos = buquesNuestros.toString() 
+  let listaBarcos = parseHTMLTableElem(data) 
   let recaladas = 0;
+  let totalRecaladas = 0;
   for (let i = 0; i < listaBarcos.length;i++) {
-    // INDEX [0] DEL BUQUE
-    let inicioString = (stringDatos.search(listaBarcos[i].Buque)) 
 
     if ( 
-    ( (inicioString != -1)  && 
-    (listaBarcos[i].Buque = ( stringDatos.slice(inicioString,inicioString+(listaBarcos[i].Buque).length) ) )
-     ) ||  (listaBarcos[i].Agente = "AGENCIA MARITIMA INTERNACIONAL  SA") 
+    (buquesNuestros.has(listaBarcos[i].Buque)) ||  (listaBarcos[i].Agente = "AGENCIA MARITIMA INTERNACIONAL  SA") 
     ) {
       recaladas = recaladas + 1
 
@@ -122,7 +122,9 @@ get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
     '</tr>';
     
     }
-    if (((i+1) < listaBarcos.length) && (comparacionMes(listaBarcos[i],listaBarcos[i+1])) ) {
+    if (
+      ( (i+1) < listaBarcos.length) && (comparacionMes(listaBarcos[i].Llegada,listaBarcos[i+1].Llegada) ) 
+    ) {
       mes = listaBarcos[i].Llegada.slice(3,5)
       htmlString = htmlString + 
       ' <tr>'+
@@ -130,12 +132,13 @@ get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
       '<td colspan="2" style="font-weight: bolder;">RECALADAS: '+recaladas+'</td>'+
       '</tr>';
       ;
-
+      totalRecaladas += recaladas
       recaladas = 0
     }
   }
-  console.log(listaBarcos)
   tablaHtml.innerHTML = htmlString
+  console.log(listaBarcos)
+  console.log("Total de recaladas: " + totalRecaladas)
 })
 .catch((err) => {
   console.log("Error encontrado:", err);
