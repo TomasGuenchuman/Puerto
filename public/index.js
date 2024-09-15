@@ -23,7 +23,11 @@ const listado =
   'OCEAN ADVENTURER',
   'OCEAN NOVA',
   'SEA SPIRIT',
-  'THE WORLD'
+  'THE WORLD',
+  /* PESQUEROS */
+  'SAN ARAWA II',
+  'CENTURION DEL ATLANTICO',
+  'CAPESANTE'
     
 ]
 
@@ -162,27 +166,66 @@ get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891")
 });
 
 
-/*
-    STRING A JSON ORIGINAL
-function parseHTMLTableElem(table) { //parametro: string
+/* BUQUES PESQUEROS */
 
-  // html string
-  const htmlStr = table;
-
-  // make a new parser
+// se le envia como parametro los <ul> <li> del la API y retorna el json
+function parseHtmlToJSON(html) {
   const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const widgets = doc.querySelectorAll('.widget.widget-categories');
 
-  // convert html string into DOM
-  const tableEl = parser.parseFromString(htmlStr, "text/html");
+  const ships = Array.from(widgets).map(widget => {
+      const titleElement = widget.querySelector('h3.widget-title');
+      const name = titleElement.textContent.trim();
+      const img = titleElement.querySelector('img') ? titleElement.querySelector('img').src : null;
 
-  const columns = Array.from(tableEl.querySelectorAll('th')).map(it => it.textContent)
-  const rows = tableEl.querySelectorAll('tbody > tr')
-  return Array.from(rows).map(row => {
-      const cells = Array.from(row.querySelectorAll('td'))
-      return columns.reduce((obj, col, idx) => {
-          obj[col] = cells[idx].textContent
-          return obj
-      }, {})
-  })
+      const listItems = widget.querySelectorAll('ul li');
+
+      const getTextContent = (index) => listItems[index] ? listItems[index].textContent.trim().split(': ')[1] : null;
+
+      return {
+          name,
+          img,
+          arrivalDate: getTextContent(0),
+          departureDate: getTextContent(1),
+          shipType: getTextContent(2),
+          length: getTextContent(3),
+          agent: getTextContent(4),
+          assignedSite: getTextContent(5),
+          siteImg: listItems[7] ? listItems[7].querySelector('img').src : null
+      };
+  });
+
+  return ships;
 }
-*/
+
+function buquesPesqueros(){
+  get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/141")
+  .then(repos => {
+    const jsonPesqueros = parseHtmlToJSON(repos);
+    const tablaHtmlPesqueros = document.getElementById("buques")
+    htmlString = '';
+    console.log(jsonPesqueros)
+    for (let i = 0; i < jsonPesqueros.length;i++) {
+
+      if ( 
+      /*(buquesNuestros.has(jsonPesqueros[i].name)) */true
+      ) {
+  
+        htmlString = htmlString + 
+      ' <tr>'+
+      '<td>'+jsonPesqueros[i].name+'</td>'+
+      '<td>'+jsonPesqueros[i].arrivalDate+'</td>'+
+      '<td>'+jsonPesqueros[i].departureDate+'</td>'+
+      '<td>'+jsonPesqueros[i].agent+'</td>'+
+      '</tr>';
+      
+      }
+
+    }
+    tablaHtmlPesqueros.innerHTML = htmlString
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}

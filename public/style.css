@@ -46,6 +46,27 @@ table th {
     }
 }
 
+/* BOTON PESQUEROS  */
+.buques-pesqueros {
+    position: absolute;
+    background-color: #04AA6D;
+    border-radius: 50%;
+    width: 3.5rem;
+    bottom: 0;
+    right: 0;
+    margin: 2rem;
+    cursor: pointer;
+    border: solid #000000;
+}
+
+@media only screen and (min-width: 480px) {
+    .buques-pesqueros {
+        width: 5rem;
+        bottom: 0;
+        right: 0;
+    }
+}
+
 /*  LOADER  */
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
