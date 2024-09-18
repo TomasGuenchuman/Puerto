@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUERTO</title>
+    <script src="index.js" type="module"></script> 
+    <link rel="stylesheet" href="style.css">
+</head>
+    <body>
+
+        <img src="images/pesca.png" alt="PESQUEROS" class="buques-pesqueros"
+        onclick="buquesPesqueros()"/>
+
+
+        <table>
+            <thead>
+                <th>Buque</th>
+                <th>Llegada</th>
+                <th>Partida</th>
+                <th>Agente</th>
+            </thead>
+            <tbody id="buques">
+                <tr>
+                    <td colspan="4" style="text-align: -webkit-center;">
+                        <div class="loader"></div>
+                    </td>
+                </tr>
+            </tbody>
+            
+          </table>
+    </body>
+</html>
