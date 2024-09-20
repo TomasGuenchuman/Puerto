@@ -7,6 +7,7 @@ body {
     height: 100vh;
     width: 100vw;
     overflow-x: hidden;
+    z-index: 1;
 }
 table {
     width: 100%;
@@ -47,9 +48,10 @@ table th {
 }
 
 /* BOTON PESQUEROS  */
-.buques-pesqueros {
+#buques-pesqueros {
+    z-index: 10;
     position: absolute;
-    background-color: #04AA6D;
+    background-color: darkorange;
     border-radius: 50%;
     width: 3.5rem;
     bottom: 0;
@@ -60,11 +62,46 @@ table th {
 }
 
 @media only screen and (min-width: 480px) {
-    .buques-pesqueros {
+    #buques-pesqueros {
         width: 5rem;
         bottom: 0;
         right: 0;
     }
+}
+
+/* POP UP */
+
+#popUp {
+    z-index: -1;
+    position: absolute;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#popUp table tr{
+    background-color: #f58700;
+}
+
+#popUp table tr:nth-child(even){
+    background-color: #c76e00;
+}
+
+/* SALIR */
+#salir {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+#salir p {
+    color: white;
+    background-color: red;
+    border-radius: 50%;
+    padding: 10px;
+    border: solid black;
+    cursor: pointer;
 }
 
 /*  LOADER  */

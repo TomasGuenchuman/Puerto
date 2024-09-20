@@ -1,6 +1,6 @@
-import {parseHtmlToJSON} from './listToJson.js';
-import {stringTableToJson} from './TableToJson.js';
-import {buquesNuestros} from './buques.js'; // HASH TABLE CON LOS BUQUES
+import {stringTableToJson} from './modules/TableToJson.js';
+import {buquesNuestros} from './listaBuques.js'; // HASH TABLE CON LOS BUQUES
+import {buquesPesqueros} from './buquesPesqueros.js'; // GENERA EL POP UP CON LOS BUQUES PESQUEROS
 
 const meses = [
   "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE",
@@ -15,7 +15,7 @@ function comparacionMes (recalada,recaladaSiguiente) {
 }
 
 //  LLAMADO A LA API; SE OBTIENE STRING (HTML TABLE)
-function get(url) {
+export function get(url) {
   return new Promise((resolve, reject) => {
 
     fetch(url)
@@ -30,6 +30,7 @@ function get(url) {
 
   });
 }
+
 // OBTENER BUQUES DE LA TEMPORADA
 function buquesTemporada(url){
   get(url)
@@ -47,6 +48,7 @@ function buquesTemporada(url){
       if ( 
       (buquesNuestros.has(listaBarcos[i].Buque)) ||  (listaBarcos[i].Agente === "AGENCIA MARITIMA INTERNACIONAL  SA") 
       ) {
+        
         recaladas = recaladas + 1
 
         htmlString = htmlString + 
@@ -84,38 +86,7 @@ function buquesTemporada(url){
   });
 
 }
-//  OBTENER BUQUES PESQUEROS
-function buquesPesqueros(){
-  get("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/141")
-  .then(repos => {
-    const jsonPesqueros = parseHtmlToJSON(repos);
-    const tablaHtmlPesqueros = document.getElementById("buques")
-    htmlString = '';
-    console.log(jsonPesqueros)
-    for (const buque of jsonPesqueros) {
-      if ( 
-        /*(buquesNuestros.has(buque.name)) */true
-        ) {
-    
-          htmlString = htmlString + 
-        ' <tr>'+
-        '<td>'+buque.name+'</td>'+
-        '<td>'+buque.arrivalDate+'</td>'+
-        '<td>'+buque.departureDate+'</td>'+
-        '<td>'+buque.agent+'</td>'+
-        '</tr>';
-        
-        } 
-    }
-    tablaHtmlPesqueros.innerHTML = htmlString
-  })
-  .catch(error => {
-    console.error(error);
-  });
-}
-
 
 buquesTemporada("https://www.dpp.gob.ar/web/wp-json/wp/v2/pages/3891");
-
-
+document.getElementById("buques-pesqueros").addEventListener("click",buquesPesqueros);
 
