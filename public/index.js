@@ -1,5 +1,5 @@
 import {stringTableToJson} from './modules/TableToJson.js';
-import {buquesNuestros} from './listaBuques.js'; // HASH TABLE CON LOS BUQUES
+import {buquesNuestros} from './buques.js'; // HASH TABLE CON LOS BUQUES
 import {buquesPesqueros} from './buquesPesqueros.js'; // GENERA EL POP UP CON LOS BUQUES PESQUEROS
 
 const meses = [
@@ -78,7 +78,7 @@ function buquesTemporada(url){
       }
     }
     tablaHtml.innerHTML = htmlString
-    console.log("Total( de recaladas: " + totalRecaladas)
+    console.log("Total de recaladas: " + totalRecaladas)
   })
   .catch((err) => {
     console.log("Error encontrado:", err);
