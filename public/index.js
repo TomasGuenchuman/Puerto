@@ -46,7 +46,8 @@ function buquesTemporada(url){
     for (let i = 0; i < listaBarcos.length;i++) {
 
       if ( 
-      (buquesNuestros.has(listaBarcos[i].Buque)) ||  (listaBarcos[i].Agente === "AGENCIA MARITIMA INTERNACIONAL  SA") 
+      (buquesNuestros.has(listaBarcos[i].Buque)) ||  (listaBarcos[i].Agente === "AGENCIA MARITIMA INTERNACIONAL  SA")
+      || (listaBarcos[i].Agente === "CRUISING USHUAIA SA") 
       ) {
         
         recaladas = recaladas + 1
